@@ -7,3 +7,7 @@ elif calc == '-':
     print(a - b)
 elif calc == '*':
     print(a * b)
+elif calc == '/' and b != 0:
+    print(a / b)
+else:
+    print('Ошибка')
