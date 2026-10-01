@@ -5,3 +5,5 @@ if calc == '+':
     print(a + b)
 elif calc == '-':
     print(a - b)
+elif calc == '*':
+    print(a * b)
