@@ -27,4 +27,15 @@ def average_by_city(records: list[dict]) -> dict:
         total[city] = total.get(city, 0) + temp
         count[city] = count.get(city, 0) + 1
     for city in total:
-        temps[city] =  f"{total[city] / count[city]}"
+        temps[city] = float(f"{(total[city] / count[city]):.1f}")
+    return temps
+
+def warmest_city(records: list[dict]) -> str:
+    temps = average_by_city(records)
+    best = ''
+    for city in temps:
+        if best == '' or temps[city] > temps[best] or (temps[city] == temps[best] and city < best):
+            best = city
+        return best
+    
+
