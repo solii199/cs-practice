@@ -1,13 +1,10 @@
 from stats import average_by_city, read_valid, warmest_city
 import sys
 lines = sys.stdin.read().splitlines()
-count = 0
 
-for line in lines:
-    if line.strip():
-        count += 1
+count = sum(1 for line in lines if line.strip())
 
-valid_line = read_valid(line)
+valid_line = read_valid(lines)
 best_city = warmest_city(valid_line)
 
 print(len(valid_line))
