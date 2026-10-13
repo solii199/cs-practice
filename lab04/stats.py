@@ -16,7 +16,14 @@ def parse_record(line: str) -> dict:
     except ValueError:
         raise ValueError('Температура должна быть числом: ')
 
+    from datetime import datetime
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        raise ValueError('Неверный формат даты: ')
+
     data = {'city': city, 'temperature': temp, 'date': date}
+
     return data
 
 def read_valid(lines: list[str]) -> list[dict]:
