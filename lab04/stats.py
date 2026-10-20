@@ -11,10 +11,8 @@ def parse_record(line: str) -> dict:
     if city == '' or date == '':
         raise ValueError('город или дата пустая')
 
-    try:
-        temp = float(temp)
-    except ValueError:
-        raise ValueError('Температура должна быть числом')
+
+    temp = float(temp)
 
     from datetime import datetime
     try:
@@ -25,6 +23,7 @@ def parse_record(line: str) -> dict:
     data = {'city': city, 'temperature': temp, 'date': date}
 
     return data
+
 
 
 
