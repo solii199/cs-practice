@@ -2,11 +2,7 @@ def parse_record(line: str) -> dict:
     if len(line.split(';')) != 3:
         raise ValueError('полей не ровно 3: ')
 
-    city, temp, date = line.split(';')
-
-    city = city.strip()
-    temp = temp.strip()
-    date = date.strip()
+    city, temp, date = [part.strip() for part in line.split(';')]
 
     if city == '' or date == '':
         raise ValueError('город или дата пустая: ')
@@ -25,6 +21,7 @@ def parse_record(line: str) -> dict:
     data = {'city': city, 'temperature': temp, 'date': date}
 
     return data
+
 
 def read_valid(lines: list[str]) -> list[dict]:
     valid = []
