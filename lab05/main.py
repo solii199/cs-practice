@@ -21,11 +21,13 @@ def main():
 
     print(f"{total_parsed} {error_count} {broken_count}")
 
+
     report_text = format_report(counts, errors)
-    with open("lab05/report.txt", "w", encoding="utf-8") as report_file:
+    with open("report.txt", "w", encoding="utf-8") as report_file:
         report_file.write(report_text)
 
 
 if __name__ == "__main__":
     main()
+
 
