@@ -1,12 +1,11 @@
 import json
-import copy
-
 
 def csv_to_records(text: str) -> list[dict]:
     if not text or not text.strip():
         return []
 
-    lines = [line.strip() for line in text.strip().split('\n') if line.strip()]
+    # Разделяем на строки, игнорируя пустые
+    lines = [line.strip() for line in text.split('\n') if line.strip()]
     if not lines:
         return []
 
@@ -22,6 +21,7 @@ def csv_to_records(text: str) -> list[dict]:
             else:
                 record[header] = ""
         records.append(record)
+
     return records
 
 
@@ -33,13 +33,14 @@ def _convert_type(val_str: str):
     if val_str.lower() in ('false', 'no'):
         return False
 
-    try:
+    if val_str.isdigit() or (val_str.startswith('-') and val_str[1:].isdigit()):
         return int(val_str)
-    except ValueError:
-        pass
+
+    if ',' in val_str:
+        return val_str
 
     try:
-        return float(val_str.replace(',', '.'))
+        return float(val_str)
     except ValueError:
         pass
 
@@ -72,7 +73,6 @@ def parse_settings(lines: list[str]) -> dict:
             else:
                 current_list_key = None
                 result[key] = _convert_type(value)
-
     return result
 
 
@@ -80,7 +80,7 @@ def merge_by_key(rows: list[dict], extra: dict, key: str = 'id') -> list[dict]:
     updated_rows = []
 
     for row in rows:
-        new_row = copy.deepcopy(row)
+        new_row = row.copy()
         match_value = str(new_row.get(key, ''))
 
         if match_value in extra:
@@ -91,9 +91,9 @@ def merge_by_key(rows: list[dict], extra: dict, key: str = 'id') -> list[dict]:
         updated_rows.append(new_row)
     return updated_rows
 
-
 def records_to_json(records: list[dict]) -> str:
     return json.dumps(records, sort_keys=True, indent=2, ensure_ascii=False)
+
 
 
 
