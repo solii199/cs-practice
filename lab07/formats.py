@@ -13,13 +13,13 @@ def csv_to_records(text: str) -> list[dict]:
     if not lines:
         return []
 
-    first_line = lines.pop(0)
+    first_line_str = lines[0]
     headers = []
-    for h in first_line.split(','):
+    for h in first_line_str.split(','):
         headers.append(h.strip())
 
     records = []
-    for line in lines:
+    for line in lines[1:]:
         values = []
         for v in line.split(','):
             values.append(v.strip())
@@ -70,10 +70,8 @@ def parse_settings(lines: list[str]) -> dict:
 
         if line_clean.startswith('-'):
             if current_list_key is not None:
-                parts = line_clean.split('-', 1)
-                if len(parts) > 1:
-                    item_value = parts[1].strip()
-                    result[current_list_key].append(_convert_type(item_value))
+                item_value = line_clean[1:].strip()
+                result[current_list_key].append(_convert_type(item_value))
             continue
 
         if ':' in line_clean:
