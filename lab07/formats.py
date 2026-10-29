@@ -39,26 +39,28 @@ def csv_to_records(text: str) -> list[dict]:
 def _convert_type(val_str: str):
     val_str = val_str.strip()
 
-    # Проверка на логический тип
+    # Логические типы
     if val_str.lower() in ('true', 'yes'):
         return True
     if val_str.lower() in ('false', 'no'):
         return False
 
-    # Строго проверяем на целое число (состоит только из цифр, учитывая возможный минус)
-    if val_str.isdigit() or (val_str.startswith('-') and val_str[1:].isdigit()):
+    # Обработка чисел с запятой в качестве разделителя (например, "3,5")
+    if ',' in val_str:
+        val_dots = val_str.replace(',', '.')
+        try:
+            return float(val_dots)
+        except ValueError:
+            return val_str
+
+    # Стандартные числа
+    try:
+        if '.' in val_str:
+            return float(val_str)
         return int(val_str)
+    except ValueError:
+        pass
 
-    # Строго проверяем на число с плавающей точкой (содержит одну точку)
-    if '.' in val_str:
-        parts = val_str.split('.')
-        if len(parts) == 2:
-            left_part = parts[0].lstrip('-')
-            right_part = parts[1]
-            if (left_part.isdigit() or not left_part) and right_part.isdigit():
-                return float(val_str)
-
-    # Во всех остальных случаях (включая "3,5") возвращаем как строку
     return val_str
 
 
