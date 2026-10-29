@@ -22,19 +22,16 @@ def csv_to_records(text: str) -> list[dict]:
             else:
                 record[header] = ""
         records.append(record)
-
     return records
 
 
 def _convert_type(val_str: str):
     val_str = val_str.strip()
 
-
     if val_str.lower() in ('true', 'yes'):
         return True
     if val_str.lower() in ('false', 'no'):
         return False
-
 
     try:
         return int(val_str)
@@ -47,6 +44,59 @@ def _convert_type(val_str: str):
         pass
 
     return val_str
+
+
+def parse_settings(lines: list[str]) -> dict:
+    result = {}
+    current_list_key = None
+
+    for line in lines:
+        line_clean = line.split('#')[0].rstrip()
+        if not line_clean.strip():
+            continue
+
+        if line_clean.strip().startswith('-'):
+            if current_list_key is not None:
+                item_value = line_clean.strip()[1:].strip()
+                result[current_list_key].append(_convert_type(item_value))
+            continue
+
+        if ':' in line_clean:
+            parts = line_clean.split(':', 1)
+            key = parts[0].strip()
+            value = parts[1].strip()
+
+            if value == '':
+                current_list_key = key
+                result[current_list_key] = []
+            else:
+                current_list_key = None
+                result[key] = _convert_type(value)
+
+    return result
+
+
+def merge_by_key(rows: list[dict], extra: dict, key: str = 'id') -> list[dict]:
+    updated_rows = []
+
+    for row in rows:
+        new_row = copy.deepcopy(row)
+        match_value = str(new_row.get(key, ''))
+
+        if match_value in extra:
+            extra_data = extra[match_value]
+            for k, v in extra_data.items():
+                if k not in new_row:
+                    new_row[k] = v
+        updated_rows.append(new_row)
+    return updated_rows
+
+
+def records_to_json(records: list[dict]) -> str:
+    return json.dumps(records, sort_keys=True, indent=2, ensure_ascii=False)
+
+
+
 
 
 
