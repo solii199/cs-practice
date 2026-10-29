@@ -51,7 +51,9 @@ def parse_settings(lines: list[str]) -> dict:
     current_list_key = None
 
     for line in lines:
-        line_clean = line.split('#')[0]
+        line_clean, separator, comment = line.partition('#')
+        line_clean = line_clean.rstrip()
+
         if not line_clean.strip():
             continue
 
@@ -62,9 +64,7 @@ def parse_settings(lines: list[str]) -> dict:
             continue
 
         if ':' in line_clean:
-            parts = line_clean.split(':', 1)
-            key = parts[0].strip()
-            value = parts[1].strip()
+            key, value = map(str.strip, line_clean.split(':', 1))
 
             if value == '':
                 current_list_key = key
