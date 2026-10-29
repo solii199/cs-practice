@@ -70,8 +70,10 @@ def parse_settings(lines: list[str]) -> dict:
 
         if line_clean.startswith('-'):
             if current_list_key is not None:
-                item_value = line_clean.split('-', 1)[1].strip()
-                result[current_list_key].append(_convert_type(item_value))
+                parts = line_clean.split('-', 1)
+                if len(parts) > 1:
+                    item_value = parts[1].strip()
+                    result[current_list_key].append(_convert_type(item_value))
             continue
 
         if ':' in line_clean:
