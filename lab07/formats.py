@@ -9,7 +9,8 @@ def csv_to_records(text: str) -> list[dict]:
     if not lines:
         return []
 
-    headers = [h.strip() for h in lines[0].split(',')]
+    first_line = lines[0]
+    headers = [h.strip() for h in first_line.split(',')]
 
     records = []
     for line in lines[1:]:
@@ -46,7 +47,8 @@ def parse_settings(lines: list[str]) -> dict:
     current_list_key = None
 
     for line in lines:
-        line_clean = line.split('#')[0].rstrip()
+        line_parts = line.split('#')
+        line_clean = line_parts[0].rstrip()
         if not line_clean.strip():
             continue
 
@@ -91,4 +93,3 @@ def merge_by_key(rows: list[dict], extra: dict, key: str = 'id') -> list[dict]:
 
 def records_to_json(records: list[dict]) -> str:
     return json.dumps(records, sort_keys=True, indent=2, ensure_ascii=False)
-
