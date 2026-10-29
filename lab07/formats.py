@@ -5,21 +5,32 @@ def csv_to_records(text: str) -> list[dict]:
     if not text or not text.strip():
         return []
 
-    lines = [line.strip() for line in text.split('\n') if line.strip()]
+    lines = []
+    for line in text.split('\n'):
+        if line.strip():
+            lines.append(line.strip())
+
     if not lines:
         return []
 
-    headers = [h.strip() for h in lines[0].split(',')]
-    records = []
+    first_line = lines[0]
+    headers = []
+    for h in first_line.split(','):
+        headers.append(h.strip())
 
+    records = []
     for line in lines[1:]:
-        values = [v.strip() for v in line.split(',')]
+        values = []
+        for v in line.split(','):
+            values.append(v.strip())
+
         record = {}
         for i in range(len(headers)):
+            header = headers[i]
             if i < len(values):
-                record[headers[i]] = values[i]
+                record[header] = values[i]
             else:
-                record[headers[i]] = ""
+                record[header] = ""
         records.append(record)
 
     return records
@@ -33,13 +44,13 @@ def _convert_type(val_str: str):
     if val_str.lower() in ('false', 'no'):
         return False
 
-    try:
-        return int(val_str)
-    except ValueError:
-        pass
+    if ',' in val_str:
+        return val_str
 
     try:
-        return float(val_str)
+        if '.' in val_str:
+            return float(val_str)
+        return int(val_str)
     except ValueError:
         pass
 
@@ -51,22 +62,24 @@ def parse_settings(lines: list[str]) -> dict:
     current_list_key = None
 
     for line in lines:
-        line_clean, separator, comment = line.partition('#')
-        line_clean = line_clean.rstrip()
+        line_clean, _, _ = line.partition('#')
+        line_clean = line_clean.strip()
 
-        if not line_clean.strip():
+        if not line_clean:
             continue
 
-        if line_clean.strip().startswith('-'):
+        if line_clean.startswith('-'):
             if current_list_key is not None:
-                item_value = line_clean.strip()[1:].strip()
+                item_value = line_clean[1:].strip()
                 result[current_list_key].append(_convert_type(item_value))
             continue
 
         if ':' in line_clean:
-            key, value = map(str.strip, line_clean.split(':', 1))
+            key, _, value = line_clean.partition(':')
+            key = key.strip()
+            value = value.strip()
 
-            if value == '':
+            if not value:
                 current_list_key = key
                 result[current_list_key] = []
             else:
