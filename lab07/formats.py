@@ -13,13 +13,13 @@ def csv_to_records(text: str) -> list[dict]:
     if not lines:
         return []
 
-    first_line = lines[0]
+    first_line = lines.pop(0)
     headers = []
     for h in first_line.split(','):
         headers.append(h.strip())
 
     records = []
-    for line in lines[1:]:
+    for line in lines:
         values = []
         for v in line.split(','):
             values.append(v.strip())
