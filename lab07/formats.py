@@ -51,7 +51,7 @@ def parse_settings(lines: list[str]) -> dict:
     current_list_key = None
 
     for line in lines:
-        line_clean = line.split('#')[0].rstrip()
+        line_clean = line.split('#')[0]
         if not line_clean.strip():
             continue
 
@@ -96,4 +96,3 @@ def merge_by_key(rows: list[dict], extra: dict, key: str = 'id') -> list[dict]:
 
 def records_to_json(records: list[dict]) -> str:
     return json.dumps(records, sort_keys=True, indent=2, ensure_ascii=False)
-
