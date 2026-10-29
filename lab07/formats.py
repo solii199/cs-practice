@@ -45,15 +45,14 @@ def _convert_type(val_str: str):
     if val_str.lower() in ('false', 'no'):
         return False
 
-    # Обработка чисел с запятой в качестве разделителя (например, "3,5")
+    # Обработка вещественных чисел с запятой (например, "3,5" -> 3.5)
     if ',' in val_str:
-        val_dots = val_str.replace(',', '.')
         try:
-            return float(val_dots)
+            return float(val_str.replace(',', '.'))
         except ValueError:
             return val_str
 
-    # Стандартные числа
+    # Стандартные числа (int или float с точкой)
     try:
         if '.' in val_str:
             return float(val_str)
