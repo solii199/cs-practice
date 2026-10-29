@@ -1,10 +1,10 @@
 import json
 
+
 def csv_to_records(text: str) -> list[dict]:
     if not text or not text.strip():
         return []
 
-    # Разделяем на строки, игнорируя пустые
     lines = [line.strip() for line in text.split('\n') if line.strip()]
     if not lines:
         return []
@@ -73,6 +73,7 @@ def parse_settings(lines: list[str]) -> dict:
             else:
                 current_list_key = None
                 result[key] = _convert_type(value)
+
     return result
 
 
@@ -88,18 +89,11 @@ def merge_by_key(rows: list[dict], extra: dict, key: str = 'id') -> list[dict]:
             for k, v in extra_data.items():
                 if k not in new_row:
                     new_row[k] = v
+
         updated_rows.append(new_row)
+
     return updated_rows
+
 
 def records_to_json(records: list[dict]) -> str:
     return json.dumps(records, sort_keys=True, indent=2, ensure_ascii=False)
-
-
-
-
-
-
-
-
-
-
