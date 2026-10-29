@@ -33,18 +33,12 @@ def _convert_type(val_str: str):
     if val_str.lower() in ('false', 'no'):
         return False
 
-    if val_str.isdigit() or (val_str.startswith('-') and val_str[1:].isdigit()):
-        return int(val_str)
-
-    if ',' in val_str:
-        return val_str
-
     try:
-        return float(val_str)
+        if '.' in val_str:
+            return float(val_str)
+        return int(val_str)
     except ValueError:
-        pass
-
-    return val_str
+        return val_str
 
 
 def parse_settings(lines: list[str]) -> dict:
