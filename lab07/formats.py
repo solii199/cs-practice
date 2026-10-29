@@ -5,21 +5,31 @@ def csv_to_records(text: str) -> list[dict]:
     if not text or not text.strip():
         return []
 
-    lines = [line.strip() for line in text.split('\n') if line.strip()]
+    raw_lines = text.split('\n')
+    lines = []
+    for line in raw_lines:
+        if line.strip():
+            lines.append(line.strip())
+
     if not lines:
         return []
 
-    headers_line, *data_lines = lines
-    headers = [h.strip() for h in headers_line.split(',')]
+    headers = []
+    for h in lines[0].split(','):
+        headers.append(h.strip())
 
     records = []
-    for line in data_lines:
-        values = [v.strip() for v in line.split(',')]
+    for line in lines[1:]:
+        values = []
+        for v in line.split(','):
+            values.append(v.strip())
+
         record = {}
-        for header, val in zip(headers, values):
-            record[header] = val
-        for header in headers:
-            if header not in record:
+        for i in range(len(headers)):
+            header = headers[i]
+            if i < len(values):
+                record[header] = values[i]
+            else:
                 record[header] = ""
         records.append(record)
 
@@ -34,6 +44,9 @@ def _convert_type(val_str: str):
     if val_str.lower() in ('false', 'no'):
         return False
 
+    if ',' in val_str:
+        return val_str
+
     try:
         if '.' in val_str:
             return float(val_str)
@@ -47,20 +60,21 @@ def parse_settings(lines: list[str]) -> dict:
     current_list_key = None
 
     for line in lines:
-        line_clean, *discard = line.split('#')
+        line_clean, before_hash, after_hash = line.partition('#')
         line_clean = line_clean.rstrip()
+
         if not line_clean.strip():
             continue
 
         if line_clean.strip().startswith('-'):
             if current_list_key is not None:
-                _, item_value = line_clean.strip().split('-', 1)
-                item_value = item_value.strip()
+                content = line_clean.strip()
+                item_value = content[1:].strip()
                 result[current_list_key].append(_convert_type(item_value))
             continue
 
         if ':' in line_clean:
-            key, value = line_clean.split(':', 1)
+            key, sep, value = line_clean.partition(':')
             key = key.strip()
             value = value.strip()
 
