@@ -9,8 +9,7 @@ def csv_to_records(text: str) -> list[dict]:
     if not lines:
         return []
 
-    first_line = lines[0]
-    headers = [h.strip() for h in first_line.split(',')]
+    headers = [h.strip() for h in lines[0].split(',')]
 
     records = []
     for line in lines[1:]:
@@ -47,7 +46,9 @@ def parse_settings(lines: list[str]) -> dict:
     current_list_key = None
 
     for line in lines:
-        line_clean = line.split('#')[0].rstrip()
+        parts_comment = line.split('#')
+        line_clean = parts_comment[0].rstrip()
+
         if not line_clean.strip():
             continue
 
