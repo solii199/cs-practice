@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def make_hours() -> list[int]:
     return np.arange(0, 22, 3).tolist()
 
@@ -14,11 +15,13 @@ def vector_report(values: list[float]) -> dict:
         "reversed": arr[::-1].tolist(),
     }
 
+
 def change_vector(values: list[float]) -> list[float]:
     arr = np.asarray(values, dtype=float).copy()
     arr[2:5] = 99
     arr[::2] = -1
     return arr.tolist()
+
 
 def cap_above(values: list[float], limit: float) -> list[float]:
     arr = np.asarray(values, dtype=float).copy()
@@ -30,4 +33,3 @@ def celsius_to_fahrenheit(values: list[float]) -> list[float]:
     arr = np.asarray(values, dtype=float)
     fahrenheit = arr * 9 / 5 + 32
     return fahrenheit.tolist()
-
